@@ -26,7 +26,7 @@ namespace SportStore
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.EnableEndpointRouting=false);
+            services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddTransient<IProductRepository, ProductRepository>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
@@ -42,19 +42,34 @@ namespace SportStore
             }
             app.UseStatusCodePages();
             app.UseStaticFiles();
-           
+
             app.UseRouting();
 
-            app.UseMvc(routes => {
+            app.UseMvc(routes =>
+            {
 
                 routes.MapRoute(
-                    name: "pagination",
-                    template: "Products/Page{productPage}",
-                    defaults: new { Controller = "Product", action = "List" });
-                    
+                        name: "null",
+                        template: "{category}/Page{productPage:int}",
+                        defaults: new { controller = "Product", action = "List" });
+
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Product}/{action=List}/{id?}");
+                        name: null,
+                        template: "Page{productPage:int}",
+                        defaults: new {controller = "Product", action = "List", productPage = 1});
+
+                routes.MapRoute(
+                        name: null,
+                        template: "{category}",
+                        defaults: new{controller = "Product",action = "List",productPage = 1});
+
+                routes.MapRoute(
+                        name: null,
+                        template: "",
+                        defaults: new{controller = "Product",action = "List",productPage = 1});
+
+
+                routes.MapRoute(name: null, template: "{controller}/{action}/{id?}");
             });
             SeedData.EnsurePopulated(app);
             //app.UseEndpoints(endpoints =>
