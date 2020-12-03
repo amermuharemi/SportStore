@@ -31,6 +31,9 @@ namespace SportStore
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("ConnString")));
+
+            services.AddMemoryCache();
+            services.AddSession();
         }
         public IConfiguration Configuration { get; }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,8 +45,7 @@ namespace SportStore
             }
             app.UseStatusCodePages();
             app.UseStaticFiles();
-
-            app.UseRouting();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
